@@ -226,8 +226,7 @@ class AntiSpamHandler:
 
             try:
                 if pre_invoke_return.get("cancel_next_invocation"):
-                    stats = self.after_invoke_extensions.get("stats")
-                    if stats:
+                    if stats := self.after_invoke_extensions.get("stats"):
                         if hasattr(stats, "injectable_nonce"):
                             # Increment stats for invocation call stats
                             try:
@@ -251,9 +250,6 @@ class AntiSpamHandler:
             except InvocationCancelled as e:
                 # Propagate this on further
                 raise e from None
-            except:
-                pass
-
         try:
             main_return = await self.core.propagate(message, guild=guild)
             main_return.pre_invoke_extensions = pre_invoke_extensions
@@ -297,7 +293,7 @@ class AntiSpamHandler:
             raise ValueError("Expected `ignore_type` to be of type IgnoreType")
 
         try:
-            item = int(item)
+            item = item
         except (ValueError, TypeError):
             raise ValueError("Expected item of type: int")
 
@@ -338,7 +334,7 @@ class AntiSpamHandler:
             raise ValueError("Expected `ignore_type` to be of type IgnoreType")
 
         try:
-            item = int(item)
+            item = item
         except (ValueError, TypeError):
             raise ValueError("Expected item of type: int")
 

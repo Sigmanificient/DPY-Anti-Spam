@@ -26,10 +26,7 @@ class BaseASHException(Exception):
     """A base exception handler for the ASH ecosystem."""
 
     def __init__(self, *args):
-        if args:
-            self.message = args[0]
-        else:
-            self.message = self.__doc__
+        self.message = args[0] if args else self.__doc__
 
     def __str__(self):
         return self.message

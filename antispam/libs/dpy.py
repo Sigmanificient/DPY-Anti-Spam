@@ -106,9 +106,8 @@ class DPY(Lib):
         if "description" in embed:
             content += f"{embed['description']}\n"
 
-        if "footer" in embed:
-            if "text" in embed["footer"]:
-                content += f"{embed['footer']['text']}\n"
+        if "footer" in embed and "text" in embed["footer"]:
+            content += f"{embed['footer']['text']}\n"
 
         if "author" in embed:
             content += f"{embed['author']['name']}\n"
@@ -141,11 +140,13 @@ class DPY(Lib):
                     data["footer"]["text"], message, warn_count, kick_count
                 )
 
-            if "icon_url" in data["footer"]:
-                if data["footer"]["icon_url"] in allowed_avatars:
-                    data["footer"]["icon_url"] = await self.substitute_args(
-                        data["footer"]["icon_url"], message, warn_count, kick_count
-                    )
+            if (
+                "icon_url" in data["footer"]
+                and data["footer"]["icon_url"] in allowed_avatars
+            ):
+                data["footer"]["icon_url"] = await self.substitute_args(
+                    data["footer"]["icon_url"], message, warn_count, kick_count
+                )
 
         if "author" in data:
             # name 'should' be required
@@ -153,11 +154,13 @@ class DPY(Lib):
                 data["author"]["name"], message, warn_count, kick_count
             )
 
-            if "icon_url" in data["author"]:
-                if data["author"]["icon_url"] in allowed_avatars:
-                    data["author"]["icon_url"] = await self.substitute_args(
-                        data["author"]["icon_url"], message, warn_count, kick_count
-                    )
+            if (
+                "icon_url" in data["author"]
+                and data["author"]["icon_url"] in allowed_avatars
+            ):
+                data["author"]["icon_url"] = await self.substitute_args(
+                    data["author"]["icon_url"], message, warn_count, kick_count
+                )
 
         if "fields" in data:
             for field in data["fields"]:
@@ -232,7 +235,7 @@ class DPY(Lib):
             )
 
         if isinstance(message.author, discord.User):  # pragma: no cover
-            log.warning(f"Given Message(id=%s) with an author of type User", message.id)
+            log.warning("Given Message(id=%s) with an author of type User", message.id)
 
         # Return if ignored bot
         if self.handler.options.ignore_bots and message.author.bot:
@@ -307,11 +310,11 @@ class DPY(Lib):
             message.guild.id,
         )
         if not bool(message.content and message.content.strip()):
-            if not message.embeds and not message.attachments:
-                # System message? Like on join trip these
-                raise LogicError
-
             if not message.embeds:
+                if not message.attachments:
+                    # System message? Like on join trip these
+                    raise LogicError
+
                 # We don't check agaisn't attachments
                 raise InvalidMessage
 
@@ -570,9 +573,7 @@ class DPY(Lib):
         delete_after_time: Optional[int] = None,
     ) -> None:  # pragma: no cover
         if isinstance(message, discord.Embed):
-            content = None
-            if self.handler.options.mention_on_embed:
-                content = mention
+            content = mention if self.handler.options.mention_on_embed else None
             await target.send(
                 content,
                 embed=message,
@@ -593,11 +594,9 @@ class DPY(Lib):
         return message.mentions
 
     async def get_channel_by_id(self, channel_id: int):  # pragma: no cover
-        channel = self.handler.bot.get_channel(channel_id)
-        if not channel:
-            channel = await self.handler.bot.fetch_channel(channel_id)
-
-        return channel
+        return self.handler.bot.get_channel(
+            channel_id
+        ) or await self.handler.bot.fetch_channel(channel_id)
 
     def get_file(self, path: str):  # pragma: no cover
         return discord.File(path)

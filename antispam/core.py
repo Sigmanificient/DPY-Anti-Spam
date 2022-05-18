@@ -442,7 +442,7 @@ class Core:
             return member.duplicate_counter
 
         try:
-            channel_id = int(channel_id)
+            channel_id = channel_id
             return member.duplicate_channel_counter_dict[channel_id]
         except (KeyError, TypeError):
             return 1

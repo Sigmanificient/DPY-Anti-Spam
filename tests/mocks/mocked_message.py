@@ -57,12 +57,13 @@ class MockedMessage:
         ).to_mock()
 
         # Guild options and 'is_in_guild' are mutually exclusive
-        if not self.is_in_guild:
-            mock.guild = None
-        else:
-            mock.guild = MockedGuild(
+        mock.guild = (
+            MockedGuild(
                 name=self.guild["name"], guild_id=self.guild["id"]
             ).to_mock()
+            if self.is_in_guild
+            else None
+        )
 
         mock.channel = MockedChannel().to_mock()
         mock.created_at = datetime.datetime.now()

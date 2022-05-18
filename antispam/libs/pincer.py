@@ -278,10 +278,10 @@ class Pincer(Lib):
             message.guild_id,
         )
         if not bool(message.content and message.content.strip()):
-            if not message.embeds and not message.attachments:
-                raise LogicError
-
             if not message.embeds:
+                if not message.attachments:
+                    raise LogicError
+
                 # We don't check agaisn't attachments
                 raise InvalidMessage
 

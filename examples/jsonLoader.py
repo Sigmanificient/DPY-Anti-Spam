@@ -11,12 +11,12 @@ def get_path():
 
 def read_json(filename):
     cwd = get_path()
-    with open(cwd + "/" + filename + ".json", "r") as file:
+    with open(f"{cwd}/{filename}.json", "r") as file:
         data = json.load(file)
     return data
 
 
 def write_json(data, filename):
     cwd = get_path()
-    with open(cwd + "/" + filename + ".json", "w") as file:
+    with open(f"{cwd}/{filename}.json", "w") as file:
         json.dump(data, file, indent=4)

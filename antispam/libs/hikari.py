@@ -246,9 +246,8 @@ class Hikari(Lib):
         if "description" in embed:
             content += f"{embed['description']}\n"
 
-        if "footer" in embed:
-            if "text" in embed["footer"]:
-                content += f"{embed['footer']['text']}\n"
+        if "footer" in embed and "text" in embed["footer"]:
+            content += f"{embed['footer']['text']}\n"
 
         if "author" in embed:
             content += f"{embed['author']['name']}\n"
@@ -281,11 +280,13 @@ class Hikari(Lib):
                     data["footer"]["text"], message, warn_count, kick_count
                 )
 
-            if "icon_url" in data["footer"]:
-                if data["footer"]["icon_url"] in allowed_avatars:
-                    data["footer"]["icon_url"] = await self.substitute_args(
-                        data["footer"]["icon_url"], message, warn_count, kick_count
-                    )
+            if (
+                "icon_url" in data["footer"]
+                and data["footer"]["icon_url"] in allowed_avatars
+            ):
+                data["footer"]["icon_url"] = await self.substitute_args(
+                    data["footer"]["icon_url"], message, warn_count, kick_count
+                )
 
         if "author" in data:
             # name 'should' be required
@@ -293,11 +294,13 @@ class Hikari(Lib):
                 data["author"]["name"], message, warn_count, kick_count
             )
 
-            if "icon_url" in data["author"]:
-                if data["author"]["icon_url"] in allowed_avatars:
-                    data["author"]["icon_url"] = await self.substitute_args(
-                        data["author"]["icon_url"], message, warn_count, kick_count
-                    )
+            if (
+                "icon_url" in data["author"]
+                and data["author"]["icon_url"] in allowed_avatars
+            ):
+                data["author"]["icon_url"] = await self.substitute_args(
+                    data["author"]["icon_url"], message, warn_count, kick_count
+                )
 
         if "fields" in data:
             for field in data["fields"]:
@@ -590,8 +593,8 @@ class Hikari(Lib):
 
     async def get_message_mentions(self, message: messages.Message):  # pragma: no cover
         data = [message.mentions.user_ids]
-        data.extend(role for role in message.mentions.role_ids)
-        data.extend(channel for channel in message.mentions.channels_ids)
+        data.extend(iter(message.mentions.role_ids))
+        data.extend(iter(message.mentions.channels_ids))
         return data
 
     def get_file(self, path: str):  # pragma: no cover

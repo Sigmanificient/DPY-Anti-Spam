@@ -134,15 +134,13 @@ class AntiSpamTracker(BasePlugin):
                     raise ValueError(
                         "Expected valid_timestamp_interval of type int"
                     ) from None
-            elif isinstance(valid_timestamp_interval, int):
-                pass
-            else:
+            elif not isinstance(valid_timestamp_interval, int):
                 raise TypeError("Expected valid_timestamp_interval of type int")
 
         self.valid_global_interval: int = (
             valid_timestamp_interval or anti_spam_handler.options.message_interval
         )
-        self.valid_global_interval = int(self.valid_global_interval)
+        self.valid_global_interval = self.valid_global_interval
 
         self.member_tracking: PluginCache = PluginCache(
             handler=anti_spam_handler, caller=self
